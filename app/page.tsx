@@ -1,4 +1,5 @@
 import Link from "next/link"
+import Image from "next/image"
 import { ArrowRight, Github, Linkedin, Mail } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
@@ -123,9 +124,12 @@ export default function Portfolio() {
             <div className="relative">
               <div className="absolute -inset-4 rounded-xl bg-gradient-to-r from-purple-500/20 to-pink-500/20 blur-xl opacity-70"></div>
               <div className="relative aspect-square rounded-xl overflow-hidden border border-zinc-800">
-                <img
+                <Image
                   src="/headshot.png"
                   alt="Rose-Nayka Fleuridor"
+                  fill
+                  priority
+                  sizes="(max-width: 768px) 100vw, 50vw"
                   className="w-full h-full object-cover"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent"></div>

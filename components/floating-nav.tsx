@@ -2,7 +2,6 @@
 
 import { useState, useEffect } from "react"
 import Link from "next/link"
-import { motion } from "framer-motion"
 import { Menu, X } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
@@ -42,11 +41,8 @@ export function FloatingNav() {
 
   return (
     <>
-      <motion.div
-        className={`fixed top-6 left-1/2 -translate-x-1/2 z-50 ${isVisible ? "opacity-100" : "opacity-0 pointer-events-none"}`}
-        initial={{ y: -100 }}
-        animate={{ y: isVisible ? 0 : -100 }}
-        transition={{ duration: 0.3 }}
+      <div
+        className={`fixed top-6 left-1/2 -translate-x-1/2 z-50 transition-all duration-300 ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 -translate-y-24 pointer-events-none"}`}
       >
         <div className="relative px-4 py-3 rounded-full bg-zinc-800/80 backdrop-blur-md border border-zinc-700/50 shadow-lg">
           <div className="absolute -inset-0.5 bg-gradient-to-r from-purple-500/20 to-pink-500/20 rounded-full blur opacity-50"></div>
@@ -91,15 +87,12 @@ export function FloatingNav() {
             </div>
           )}
         </div>
-      </motion.div>
+      </div>
 
       {/* Mobile menu */}
       {isMobile && (
-        <motion.div
-          className={`fixed inset-0 z-40 bg-black/90 backdrop-blur-md ${isOpen ? "block" : "hidden"}`}
-          initial={{ opacity: 0 }}
-          animate={{ opacity: isOpen ? 1 : 0 }}
-          transition={{ duration: 0.3 }}
+        <div
+          className={`fixed inset-0 z-40 bg-black/90 backdrop-blur-md transition-opacity duration-300 ${isOpen ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"}`}
         >
           <div className="flex flex-col items-center justify-center h-full">
             {navItems.map((item) => (
@@ -118,7 +111,7 @@ export function FloatingNav() {
               </Button>
             </Link>
           </div>
-        </motion.div>
+        </div>
       )}
     </>
   )

@@ -1,7 +1,6 @@
 "use client"
 
 import { useEffect, useRef } from "react"
-import { motion } from "framer-motion"
 
 export function CreativeHero() {
   const canvasRef = useRef<HTMLCanvasElement>(null)
@@ -13,175 +12,160 @@ export function CreativeHero() {
     const ctx = canvas.getContext("2d")
     if (!ctx) return
 
-    let devicePixelRatio: number
+    const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches
+    let rafId = 0
+    let devicePixelRatio = Math.min(window.devicePixelRatio || 1, 1.5)
+    let width = 0
+    let height = 0
+    const pointer = { x: -9999, y: -9999 }
 
-    // Set canvas dimensions
     const setCanvasDimensions = () => {
-      devicePixelRatio = window.devicePixelRatio || 1
+      devicePixelRatio = Math.min(window.devicePixelRatio || 1, 1.5)
       const rect = canvas.getBoundingClientRect()
+      width = rect.width
+      height = rect.height
 
       canvas.width = rect.width * devicePixelRatio
       canvas.height = rect.height * devicePixelRatio
-
+      ctx.setTransform(1, 0, 0, 1, 0, 0)
       ctx.scale(devicePixelRatio, devicePixelRatio)
     }
 
-    setCanvasDimensions()
-    window.addEventListener("resize", setCanvasDimensions)
-
-    // Mouse position
-    let mouseX = 0
-    let mouseY = 0
-    let targetX = 0
-    let targetY = 0
-
-    window.addEventListener("mousemove", (e) => {
-      const rect = canvas.getBoundingClientRect()
-      targetX = e.clientX - rect.left
-      targetY = e.clientY - rect.top
-    })
-
-    // Particle class
-    class Particle {
+    type Particle = {
       x: number
       y: number
-      size: number
       baseX: number
       baseY: number
+      size: number
       density: number
       color: string
-      distance: number
-
-      constructor(x: number, y: number) {
-        this.x = x
-        this.y = y
-        this.baseX = x
-        this.baseY = y
-        this.size = Math.random() * 5 + 2
-        this.density = Math.random() * 30 + 1
-        this.distance = 0
-
-        // Create a gradient from purple to pink
-        const hue = Math.random() * 60 + 270 // 270-330 range for purples and pinks
-        this.color = `hsl(${hue}, 70%, 60%)`
-      }
-
-      update() {
-        // Calculate distance between mouse and particle
-        const dx = mouseX - this.x
-        const dy = mouseY - this.y
-        this.distance = Math.sqrt(dx * dx + dy * dy)
-
-        const forceDirectionX = dx / this.distance
-        const forceDirectionY = dy / this.distance
-
-        const maxDistance = 100
-        const force = (maxDistance - this.distance) / maxDistance
-
-        if (this.distance < maxDistance) {
-          const directionX = forceDirectionX * force * this.density
-          const directionY = forceDirectionY * force * this.density
-
-          this.x -= directionX
-          this.y -= directionY
-        } else {
-          if (this.x !== this.baseX) {
-            const dx = this.x - this.baseX
-            this.x -= dx / 10
-          }
-          if (this.y !== this.baseY) {
-            const dy = this.y - this.baseY
-            this.y -= dy / 10
-          }
-        }
-      }
-
-      draw() {
-        ctx.fillStyle = this.color
-        ctx.beginPath()
-        ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2)
-        ctx.closePath()
-        ctx.fill()
-      }
     }
 
-    // Create particle grid
     const particlesArray: Particle[] = []
-    const particleCount = 1000
-    const gridSize = 30
+    const gridSize = 34
+    let numX = 0
+    let numY = 0
 
     function init() {
       particlesArray.length = 0
-
-      const canvasWidth = canvas.width / devicePixelRatio
-      const canvasHeight = canvas.height / devicePixelRatio
-
-      const numX = Math.floor(canvasWidth / gridSize)
-      const numY = Math.floor(canvasHeight / gridSize)
+      numX = Math.max(1, Math.floor(width / gridSize))
+      numY = Math.max(1, Math.floor(height / gridSize))
 
       for (let y = 0; y < numY; y++) {
         for (let x = 0; x < numX; x++) {
           const posX = x * gridSize + gridSize / 2
           const posY = y * gridSize + gridSize / 2
-          particlesArray.push(new Particle(posX, posY))
+          const hue = Math.random() * 60 + 270
+          particlesArray.push({
+            x: posX,
+            y: posY,
+            baseX: posX,
+            baseY: posY,
+            size: Math.random() * 2 + 1.8,
+            density: Math.random() * 18 + 6,
+            color: `hsl(${hue}, 70%, 60%)`,
+          })
         }
       }
     }
 
+    const handlePointerMove = (e: MouseEvent) => {
+      const rect = canvas.getBoundingClientRect()
+      pointer.x = e.clientX - rect.left
+      pointer.y = e.clientY - rect.top
+    }
+
+    const handlePointerLeave = () => {
+      pointer.x = -9999
+      pointer.y = -9999
+    }
+
+    const handleResize = () => {
+      setCanvasDimensions()
+      init()
+    }
+
+    setCanvasDimensions()
     init()
+    window.addEventListener("resize", handleResize)
+    canvas.addEventListener("mousemove", handlePointerMove)
+    canvas.addEventListener("mouseleave", handlePointerLeave)
 
-    // Animation loop
-    const animate = () => {
-      ctx.clearRect(0, 0, canvas.width, canvas.height)
+    const renderFrame = () => {
+      ctx.clearRect(0, 0, width, height)
 
-      // Smooth mouse following
-      mouseX += (targetX - mouseX) * 0.1
-      mouseY += (targetY - mouseY) * 0.1
-
-      // Draw connections
       for (let i = 0; i < particlesArray.length; i++) {
-        particlesArray[i].update()
-        particlesArray[i].draw()
+        const p = particlesArray[i]
+        const dx = pointer.x - p.x
+        const dy = pointer.y - p.y
+        const distance = Math.sqrt(dx * dx + dy * dy)
+        const maxDistance = 95
 
-        // Draw connections
-        for (let j = i; j < particlesArray.length; j++) {
-          const dx = particlesArray[i].x - particlesArray[j].x
-          const dy = particlesArray[i].y - particlesArray[j].y
-          const distance = Math.sqrt(dx * dx + dy * dy)
+        if (!reducedMotion && distance < maxDistance) {
+          const force = (maxDistance - distance) / maxDistance
+          p.x -= (dx / Math.max(distance, 0.1)) * force * (p.density * 0.24)
+          p.y -= (dy / Math.max(distance, 0.1)) * force * (p.density * 0.24)
+        } else {
+          p.x += (p.baseX - p.x) * 0.08
+          p.y += (p.baseY - p.y) * 0.08
+        }
 
-          if (distance < 30) {
-            ctx.beginPath()
-            ctx.strokeStyle = `rgba(180, 120, 255, ${0.2 - distance / 150})`
-            ctx.lineWidth = 0.5
-            ctx.moveTo(particlesArray[i].x, particlesArray[i].y)
-            ctx.lineTo(particlesArray[j].x, particlesArray[j].y)
-            ctx.stroke()
-          }
+        ctx.fillStyle = p.color
+        ctx.beginPath()
+        ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2)
+        ctx.closePath()
+        ctx.fill()
+
+        // Draw only local grid connections to avoid O(n^2) work.
+        const right = i + 1
+        const below = i + numX
+        const diag = i + numX + 1
+        if ((i + 1) % numX !== 0 && right < particlesArray.length) {
+          drawLine(p, particlesArray[right])
+        }
+        if (below < particlesArray.length) {
+          drawLine(p, particlesArray[below])
+        }
+        if ((i + 1) % numX !== 0 && diag < particlesArray.length) {
+          drawLine(p, particlesArray[diag])
         }
       }
 
-      requestAnimationFrame(animate)
+      rafId = requestAnimationFrame(renderFrame)
     }
 
-    animate()
+    const drawLine = (from: Particle, to: Particle) => {
+      const dx = from.x - to.x
+      const dy = from.y - to.y
+      const distance = Math.sqrt(dx * dx + dy * dy)
+      if (distance > gridSize * 1.6) return
 
-    // Handle window resize
-    window.addEventListener("resize", init)
+      ctx.beginPath()
+      ctx.strokeStyle = `rgba(180, 120, 255, ${0.14 - distance / 400})`
+      ctx.lineWidth = 0.5
+      ctx.moveTo(from.x, from.y)
+      ctx.lineTo(to.x, to.y)
+      ctx.stroke()
+    }
+
+    if (reducedMotion) {
+      renderFrame()
+      cancelAnimationFrame(rafId)
+    } else {
+      rafId = requestAnimationFrame(renderFrame)
+    }
 
     return () => {
-      window.removeEventListener("resize", setCanvasDimensions)
-      window.removeEventListener("resize", init)
+      cancelAnimationFrame(rafId)
+      window.removeEventListener("resize", handleResize)
+      canvas.removeEventListener("mousemove", handlePointerMove)
+      canvas.removeEventListener("mouseleave", handlePointerLeave)
     }
   }, [])
 
   return (
-    <motion.div
-      className="w-full h-[400px] md:h-[500px] relative"
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      transition={{ duration: 1 }}
-    >
+    <div className="w-full h-[400px] md:h-[500px] relative">
       <canvas ref={canvasRef} className="w-full h-full" style={{ display: "block" }} />
-    </motion.div>
+    </div>
   )
 }
