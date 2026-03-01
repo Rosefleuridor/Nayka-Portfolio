@@ -359,7 +359,6 @@ export default function Portfolio() {
           <div>
             <Link href="/" className="font-bold text-xl">
               <span className="bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-pink-600">Rose</span>
-              <span className="text-white">NF</span>
             </Link>
             <p className="text-sm text-zinc-500 mt-2">
               © {new Date().getFullYear()} Rose-Nayka Fleuridor. All rights reserved.
