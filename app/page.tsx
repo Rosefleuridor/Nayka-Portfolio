@@ -19,10 +19,12 @@ export default function Portfolio() {
     <div className="min-h-screen bg-gradient-to-b from-zinc-900 via-zinc-900 to-black text-white overflow-hidden">
       <MouseFollower />
       <ScrollProgress />
+      <a href="#main-content" className="skip-link">Skip to content</a>
       <FloatingNav />
+      <main id="main-content" tabIndex={-1}>
 
       {/* Hero Section */}
-      <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
+      <section className="relative min-h-screen flex items-center justify-center overflow-hidden pt-28 pb-20">
         <div className="absolute inset-0 z-0">
           <div className="absolute top-20 left-10 w-72 h-72 bg-purple-500 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob"></div>
           <div className="absolute top-40 right-10 w-72 h-72 bg-yellow-500 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob animation-delay-2000"></div>
@@ -48,54 +50,54 @@ export default function Portfolio() {
               Python.
             </p>
             <div className="flex flex-wrap gap-4 pt-4">
-              <Link href="#projects">
-                <Button className="relative overflow-hidden group bg-gradient-to-r from-purple-500 to-pink-500 border-0">
+              <Button className="relative overflow-hidden group bg-gradient-to-r from-purple-500 to-pink-500 border-0" asChild>
+                <Link href="#projects">
                   <span className="relative z-10 flex items-center">
                     View Projects <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
                   </span>
                   <span className="absolute inset-0 bg-gradient-to-r from-pink-500 to-purple-500 opacity-0 group-hover:opacity-100 transition-opacity"></span>
-                </Button>
-              </Link>
-              <Link href="#contact">
-                <Button
+                </Link>
+              </Button>
+              <Button
                   variant="outline"
                   className="border-zinc-700 text-pink-500 hover:text-pink-700 hover:border-zinc-500"
-                >
+                 asChild>
+                <Link href="#contact">
                   Contact Me
-                </Button>
-              </Link>
+                </Link>
+              </Button>
             </div>
             <div className="flex gap-4 pt-4">
-              <Link href="https://github.com/rosefleuridor" target="_blank" rel="noopener noreferrer">
-                <Button
+              <Button
                   variant="ghost"
                   size="icon"
                   className="rounded-full bg-zinc-800/50 hover:bg-zinc-800 text-zinc-400 hover:text-white"
-                >
+                 asChild>
+                <Link href="https://github.com/rosefleuridor" target="_blank" rel="noopener noreferrer">
                   <Github className="h-5 w-5" />
                   <span className="sr-only">GitHub</span>
-                </Button>
-              </Link>
-              <Link href="https://www.linkedin.com/in/rose-naykafleuridor" target="_blank" rel="noopener noreferrer">
-                <Button
+                </Link>
+              </Button>
+              <Button
                   variant="ghost"
                   size="icon"
                   className="rounded-full bg-zinc-800/50 hover:bg-zinc-800 text-zinc-400 hover:text-white"
-                >
+                 asChild>
+                <Link href="https://www.linkedin.com/in/rose-naykafleuridor" target="_blank" rel="noopener noreferrer">
                   <Linkedin className="h-5 w-5" />
                   <span className="sr-only">LinkedIn</span>
-                </Button>
-              </Link>             
-              <Link href="mailto:Rosenayka1@gmail.com">
-                <Button
+                </Link>
+              </Button>
+              <Button
                   variant="ghost"
                   size="icon"
                   className="rounded-full bg-zinc-800/50 hover:bg-zinc-800 text-zinc-400 hover:text-white"
-                >
+                 asChild>
+                <Link href="mailto:Rosenayka1@gmail.com">
                   <Mail className="h-5 w-5" />
                   <span className="sr-only">Email</span>
-                </Button>
-              </Link>
+                </Link>
+              </Button>
             </div>
           </div>
           <div className="flex justify-center">
@@ -157,14 +159,14 @@ export default function Portfolio() {
                   Council, Computer Science Club, and Track & Field.
                 </p>
 
-                <div className="grid grid-cols-2 gap-4 mt-8">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-8">
                   <div className="space-y-1">
                     <div className="text-sm text-zinc-500">Name</div>
                     <div className="font-medium">Rose-Nayka Fleuridor</div>
                   </div>
                   <div className="space-y-1">
                     <div className="text-sm text-zinc-500">Email</div>
-                    <div className="font-medium">Rosenayka1@gmail.com</div>
+                    <div className="font-medium break-words">Rosenayka1@gmail.com</div>
                   </div>
                   <div className="space-y-1">
                     <div className="text-sm text-zinc-500">Location</div>
@@ -177,9 +179,9 @@ export default function Portfolio() {
                 </div>
 
                 <div className="mt-8">
-                  <Link href="/Rose-Fleuridor-Resume.pdf" target="_blank">
-                    <Button className="bg-zinc-800 hover:bg-zinc-700 text-white">Download Resume</Button>
-                  </Link>
+                  <Button className="bg-zinc-800 hover:bg-zinc-700 text-white" asChild>
+                <Link href="/Rose-Fleuridor-Resume.pdf" target="_blank">Download Resume</Link>
+              </Button>
                 </div>
               </GlassmorphicCard>
             </div>
@@ -268,17 +270,16 @@ export default function Portfolio() {
               title="E-commerce Website"
               description="Building an e-commerce site while practicing full-stack development and deployment workflows."
               tags={["HTML", "CSS", "JavaScript", "React", "Node.js"]}
-              image="/placeholder.svg?height=400&width=600"
-              demoUrl="https://example.com"
-              repoUrl="https://github.com/rosefleuridor"
+              status="In development"
+              repoUrl="https://github.com/Rosefleuridor/rose-cosmetics"
             />
             <ProjectCard
               title="Portfolio Website"
               description="Designed and built a personal portfolio to showcase projects, growth, and technical skills."
               tags={["React", "Next.js", "CSS", "Vercel"]}
-              image="/placeholder.svg?height=400&width=600"
-              demoUrl="https://example.com"
-              repoUrl="https://github.com/rosefleuridor"
+              status="Live website"
+              demoUrl="https://nayka-portfolio.vercel.app/"
+              repoUrl="https://github.com/Rosefleuridor/Nayka-Portfolio"
             />
           </div>
         </div>
@@ -320,7 +321,7 @@ export default function Portfolio() {
                   </div>
                     <div>
                       <div className="text-sm text-zinc-500">Email</div>
-                      <div className="font-medium">Rosenayka1@gmail.com</div>
+                      <div className="font-medium break-words">Rosenayka1@gmail.com</div>
                     </div>
                   </div>
                 <div className="flex items-center gap-4">
@@ -329,7 +330,7 @@ export default function Portfolio() {
                   </div>
                     <div>
                       <div className="text-sm text-zinc-500">LinkedIn</div>
-                      <div className="font-medium">linkedin.com/in/rose-naykafleuridor</div>
+                      <div className="font-medium break-all">linkedin.com/in/rose-naykafleuridor</div>
                     </div>
                   </div>
                 <div className="flex items-center gap-4">
@@ -338,7 +339,7 @@ export default function Portfolio() {
                   </div>
                     <div>
                       <div className="text-sm text-zinc-500">GitHub</div>
-                      <div className="font-medium">github.com/rosefleuridor</div>
+                      <div className="font-medium break-all">github.com/rosefleuridor</div>
                     </div>
                   </div>
               </div>
@@ -357,6 +358,8 @@ export default function Portfolio() {
         </div>
       </section>
 
+      </main>
+
       {/* Footer */}
       <footer className="border-t border-zinc-800 py-12">
         <div className="container flex flex-col md:flex-row justify-between items-center gap-6">
@@ -369,36 +372,36 @@ export default function Portfolio() {
             </p>
           </div>
           <div className="flex gap-4">
-            <Link href="https://github.com/rosefleuridor" target="_blank" rel="noopener noreferrer">
-              <Button
+            <Button
                 variant="ghost"
                 size="icon"
                 className="rounded-full bg-zinc-800/50 hover:bg-zinc-800 text-zinc-400 hover:text-white"
-              >
+               asChild>
+                <Link href="https://github.com/rosefleuridor" target="_blank" rel="noopener noreferrer">
                 <Github className="h-5 w-5" />
                 <span className="sr-only">GitHub</span>
+              </Link>
               </Button>
-            </Link>
-            <Link href="https://www.linkedin.com/in/rose-naykafleuridor" target="_blank" rel="noopener noreferrer">
-              <Button
+            <Button
                 variant="ghost"
                 size="icon"
                 className="rounded-full bg-zinc-800/50 hover:bg-zinc-800 text-zinc-400 hover:text-white"
-              >
+               asChild>
+                <Link href="https://www.linkedin.com/in/rose-naykafleuridor" target="_blank" rel="noopener noreferrer">
                 <Linkedin className="h-5 w-5" />
                 <span className="sr-only">LinkedIn</span>
+              </Link>
               </Button>
-            </Link>
-            <Link href="mailto:Rosenayka1@gmail.com">
-              <Button
+            <Button
                 variant="ghost"
                 size="icon"
                 className="rounded-full bg-zinc-800/50 hover:bg-zinc-800 text-zinc-400 hover:text-white"
-              >
+               asChild>
+                <Link href="mailto:Rosenayka1@gmail.com">
                 <Mail className="h-5 w-5" />
                 <span className="sr-only">Email</span>
+              </Link>
               </Button>
-            </Link>
           </div>
         </div>
       </footer>
